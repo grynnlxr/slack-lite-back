@@ -8,7 +8,7 @@ services:
     container_name: javadev
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: jdk.Dockerfile
     environment:
       # NOTE: POSTGRES_DB/USER/PASSWORD should match values in db container
         POSTGRES_PASSWORD: postgres
@@ -30,10 +30,14 @@ services:
 
   db:
     container_name: postgresdb
-    image: postgres:latest
+    # image: postgres:latest
+    build:
+      context: .
+      dockerfile: psql.Dockerfile
     restart: unless-stopped
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ../database:/var/lib/postgresql/data
+      - ../reset_n_fill.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       # NOTE: POSTGRES_DB/USER/PASSWORD should match values in app container
       POSTGRES_PASSWORD: postgres
