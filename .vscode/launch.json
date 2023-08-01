@@ -2,10 +2,10 @@
     "configurations": [
 		{
 			"type": "java",
-			"name": "Spring Boot-LiteApplication<lite>",
+			"name": "Spring Boot-Application<lite>",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
-			"mainClass": "slack.lite.LiteApplication",
+			"mainClass": "slack.lite.Application",
 			"projectName": "lite",
 			"args": "",
 			"envFile": "${workspaceFolder}/.env"
