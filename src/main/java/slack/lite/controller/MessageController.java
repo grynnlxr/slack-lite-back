@@ -11,7 +11,7 @@ import slack.lite.service.MessageService;
 
 
 @RestController
-@RequestMapping("api/v1/messages/")
+@RequestMapping("api/v1/messages")
 public class MessageController {
 
 	@Autowired
@@ -27,8 +27,9 @@ public class MessageController {
 		return messageService.findAllMessages();
 	}
 
-	@GetMapping("{id}")
+	
+	@DeleteMapping("{id}")
 	public void deleteMessage(@PathVariable("id") UUID id) {
-		messageService.deleteMessage();
+		messageService.deleteMessage(id);
 	}
 }

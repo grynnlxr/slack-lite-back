@@ -1,6 +1,7 @@
 package slack.lite.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 // import java.util.List;
@@ -25,8 +26,8 @@ public class MessageService {
 		return messageRepository.findAll();
 	}
 
-	public void deleteMessage() {
-		messageRepository.deleteById(null);
+	public void deleteMessage(UUID id) {
+		messageRepository.deleteById(id);
 	}
 
 	// @Autowired
