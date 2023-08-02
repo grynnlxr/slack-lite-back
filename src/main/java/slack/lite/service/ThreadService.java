@@ -13,8 +13,21 @@ public class ThreadService {
 	@Autowired
 	ThreadRepository repository;
 
-	public Thread save(Thread thread) {
-		return repository.save(thread);
+	public Thread save(String label) {
+		Thread th = new Thread();
+		th.setLabel(label);
+		return repository.save(th);
+	}
+
+	public Optional<Thread> save(Thread th) {
+		Optional<Thread> op = repository.findById(th.getId());
+		if (op.isPresent() && !op.get().isLocked()) {
+			Thread thread = op.get();
+			thread.setLabel(th.getLabel());
+			repository.save(thread);
+			return Optional.of(thread);
+		}
+		return Optional.empty();
 	}
 
 	public Set<Thread> load() {
@@ -23,13 +36,9 @@ public class ThreadService {
 
 	public boolean delete(UUID id) {
 		Optional<Thread> ot = repository.findById(id);
-		// TODO : check if thread is locked
-		if (ot.isPresent()) { // && !ot.get().isLocked()
-			try {
-				repository.deleteById(id);
-				return true;
-			} catch (IllegalArgumentException e) {
-			}
+		if (ot.isPresent() && !ot.get().isLocked()) {
+			repository.deleteById(id);
+			return true;
 		}
 		return false;
 	}
