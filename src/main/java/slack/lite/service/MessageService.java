@@ -3,6 +3,8 @@ package slack.lite.service;
 import java.util.Set;
 import java.util.UUID;
 import slack.lite.entity.Message;
+import slack.lite.entity.User;
+
 import org.springframework.stereotype.Service;
 import slack.lite.repository.MessageRepository;
 import org.springframework.data.domain.ScrollPosition;
@@ -14,7 +16,12 @@ public class MessageService {
 	@Autowired
 	MessageRepository repository;
 
-	public Message save(Message msg) {
+	public Message save(UUID id, String content) {
+		User author = new User();
+		author.setId(id);
+		Message msg = new Message();
+		msg.setContent(content);
+		msg.setAuthor(author);
 		return repository.save(msg);
 	}
 
