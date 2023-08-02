@@ -1,20 +1,23 @@
 package slack.lite.entity;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashSet;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "message")
+@Table(name = "message", schema = "public")
 public class Message {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -23,12 +26,13 @@ public class Message {
 	@Column(nullable = false)
 	private String content;
 
-	@Column(nullable = false)
-	private String author;
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name = "author_id", nullable = false, updatable = false)
+	private User author;
 
 	private Date date;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "message_thread")
 	private Set<Thread> threads = new HashSet<Thread>();
 
@@ -48,11 +52,11 @@ public class Message {
 		this.content = content;
 	}
 
-	public String getAuthor() {
+	public User getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(String author) {
+	public void setAuthor(User author) {
 		this.author = author;
 	}
 
