@@ -21,5 +21,5 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 	 * @param offset number of messages to offset
 	 * @return returns a set of the 20 most recent messages according to offset
 	 */
-	public Set<Message> findTop20ByThreadsIdOrderByDateDesc(UUID id, OffsetScrollPosition offset);
+	public Set<Message> findTop20ByThreadIdOrderByDateDesc(UUID id, OffsetScrollPosition offset);
 }
