@@ -2,6 +2,7 @@ package slack.lite.service;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.Optional;
 import slack.lite.entity.Thread;
 import slack.lite.repository.ThreadRepository;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,16 @@ public class ThreadService {
 		return repository.findAllByOrderByLabelAsc();
 	}
 
-	public void delete(UUID id) {
-		// SOON : check if thread is locked before lock
-		repository.deleteById(id);
+	public boolean delete(UUID id) {
+		Optional<Thread> ot = repository.findById(id);
+		// TODO : check if thread is locked
+		if (ot.isPresent()) { // && !ot.get().isLocked()
+			try {
+				repository.deleteById(id);
+				return true;
+			} catch (IllegalArgumentException e) {
+			}
+		}
+		return false;
 	}
 }
