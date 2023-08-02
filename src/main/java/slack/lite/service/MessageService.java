@@ -1,56 +1,29 @@
 package slack.lite.service;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-// import java.util.List;
-//import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import slack.lite.entity.Message;
-import slack.lite.repository.*;
+import org.springframework.stereotype.Service;
+import slack.lite.repository.MessageRepository;
+import org.springframework.data.domain.ScrollPosition;
+import org.springframework.data.domain.OffsetScrollPosition;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class MessageService {
-
 	@Autowired
-	MessageRepository messageRepository;
+	MessageRepository repository;
 
-	public void addMessage(Message content) {
-		messageRepository.save(content);
+	public Message save(Message msg) {
+		return repository.save(msg);
 	}
 
-	public List<Message> findAllMessages() {
-		return messageRepository.findAll();
+	public Set<Message> load(UUID id, Integer offset) {
+		OffsetScrollPosition o = ScrollPosition.offset(offset);
+		return repository.findTop20ByThreadsIdOrderByDateDesc(id, o);
 	}
 
-	public void deleteMessage(UUID id) {
-		messageRepository.deleteById(id);
+	public void delete(UUID id) {
+		repository.deleteById(id);
 	}
-
-	// @Autowired
-	/*
-	 * public MessageService(MessageRepository messageRepository) {
-	 * this.messageRepository = messageRepository;
-	 * };
-	 */
-
-	/*
-	 * public List<Message> get20MessagesFromIndex(Integer index) {
-	 * List<Message> messages;
-	 * if(index == null) {
-	 * // Si index est null, je change le comportement du repository ici ??
-	 * 
-	 * messages = messageRepository.findByThreadByIndex();
-	 * // Ici je récupére tous les messages
-	 * messages = messageRepository.findAll();
-	 * }else {
-	 * messages = messageRepository.findAll(PageRequest.of(index,20)).getContent();
-	 * }
-	 * return messages;
-	 * 
-	 * }
-	 */
 }
