@@ -12,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "thread")
+@Table(name = "thread", schema = "public")
 public class Thread {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
