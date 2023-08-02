@@ -26,7 +26,7 @@ class MessageLite {
 @RestController
 @RequestMapping("api/v1/messages")
 public class MessageController {
-	private String bad_id = "cette id (%s) ne correspond à aucun message.";
+	private String bad_id = "Cette id ne correspond à aucun message.";
 	private String bad_content = "le message ne peut pas être vide ou ne contenir que des caractéres blanc.";
 	private String successfully_deleted = "le message à correctement été supprimer.";
 
@@ -58,11 +58,12 @@ public class MessageController {
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Response> delete(@PathVariable("id") UUID id) {
+		// TODO : géré le cas de l'id qui ne correspond pas a l'auteur du message supprimer
 		if (service.delete(id)) {
 			Response content = new Response(HttpStatus.OK, successfully_deleted);
 			return new ResponseEntity<>(content, HttpStatus.OK);
 		}
-		Response content = new Response(HttpStatus.BAD_REQUEST, String.format(bad_id, id));
+		Response content = new Response(HttpStatus.BAD_REQUEST, bad_id);
 		return new ResponseEntity<>(content, HttpStatus.BAD_REQUEST);
 	}
 }
