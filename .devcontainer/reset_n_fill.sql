@@ -13,7 +13,7 @@ CREATE TABLE "public"."message" (
     "id" uuid NOT NULL,
     "author_id" uuid NOT NULL,
     "content" text NOT NULL,
-    "date" timestamp DEFAULT now(),
+    "date" timestamp NOT NULL DEFAULT now(),
     CONSTRAINT "messages_author" FOREIGN KEY ("author_id") REFERENCES "public"."user"("id"),
     PRIMARY KEY ("id")
 );
