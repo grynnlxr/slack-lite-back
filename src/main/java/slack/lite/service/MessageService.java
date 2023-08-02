@@ -23,7 +23,12 @@ public class MessageService {
 		return repository.findTop20ByThreadsIdOrderByDateDesc(id, o);
 	}
 
-	public void delete(UUID id) {
-		repository.deleteById(id);
+	public boolean delete(UUID id) {
+		try {
+			repository.deleteById(id);
+			return true;
+		} catch (IllegalArgumentException e) {
+		}
+		return false;
 	}
 }
