@@ -34,7 +34,7 @@ public class MessageController {
 	private MessageService service;
 
 	@GetMapping
-	public ResponseEntity<Response> load(@RequestParam UUID id, @RequestParam Integer offset) {
+	public ResponseEntity<Response> load(@RequestParam("thread") UUID id, @RequestParam("offset") Integer offset) {
 		Set<Message> msgs = service.load(id, offset);
 		Response content = new Response(HttpStatus.OK, msgs);
 		return new ResponseEntity<>(content, HttpStatus.OK);
