@@ -4,6 +4,8 @@ import org.aspectj.bridge.Message;
 import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.UUID;
 
 import slack.lite.service.MessageService;
 
@@ -15,12 +17,17 @@ public class MessageController {
 	MessageService messageService;
 
 	@PostMapping("messages")
-	public void create(@RequestBody Message message){
-		messageService.addMessage(message);
+	public void create(@RequestBody Message content) {
+		messageService.addMessage(content);
 	}
 
 	@GetMapping("messages")
-	public List<Message> get20MessagesFromIndex(){
-		return messageService.get20MessagesFromIndex();
+	public List<Message> getMessages() {
+		return messageService.findAllMessages();
+	}
+
+	@GetMapping("messages/{id}")
+	public void deleteMessage(@PathVariable("id") UUID id) {
+		messageService.deleteMessage();
 	}
 }
