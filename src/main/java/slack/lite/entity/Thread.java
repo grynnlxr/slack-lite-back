@@ -1,13 +1,10 @@
 package slack.lite.entity;
 
-import java.util.Set;
 import java.util.UUID;
-import java.util.HashSet;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
@@ -23,9 +20,6 @@ public class Thread {
 
 	@Column(nullable = false, insertable = false, columnDefinition = "boolean DEFAULT false")
 	private boolean locked = false;
-
-	@ManyToMany(mappedBy = "threads")
-	private Set<Message> messages = new HashSet<Message>();
 
 	public UUID getId() {
 		return id;
