@@ -1,45 +1,44 @@
+package slack.lite.service;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import slack.lite.entity.Thread;
+import slack.lite.repository.ThreadRepository;
 
 @Service
 public class ThreadService {
 	
-
     @Autowired
     ThreadRepository threadRepository;
-;
    
-    public void getAllThread(Thread thread) {
-        threadRepository.save(thread);
+	// Ajout d'un tread
+    public void add(Thread thread) {
+		threadRepository.save(thread);
+	}
+	
+	// Récupérer tous les threads
+	public List<Thread> getAll() {
+		return threadRepository.findAll(); 
+    }
+	
+	// Mise à jour d'un thread
+    public boolean update(Thread thread, UUID id) {
+    	Optional<Thread> optional = threadRepository.findById(id);
+			if(optional.isPresent()) {
+				threadRepository.save(thread);
+				return true;
+			} else {
+				return false;
+			}
     }
 
-    public void updateThread(Thread thread) {
-        threadRepository.save(thread);
-    }
-
-    public void deleteThread(Thread thread) {
-        threadRepository.save(thread);
-    }
-
-    public List<Tigre> findAllThread() {
-        return threadRepository.findAll();
-    }
-
-    public boolean updateThread(Thread thread, Integer id) {
-        Optional<Thread> optional = threadRepository.findById(id);
-        if(optional.isPresent()){
-            threadRepository.save(thread);
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-	public void deleteThread(int id){
-        tjreadRepository.deleteById(id);
-    }
-}
-
-
+	// Supprimer un thread
+    public void delete(UUID id) {
+        threadRepository.deleteById(id);
+    }    
 }
