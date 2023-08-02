@@ -21,6 +21,9 @@ public class Thread {
 	@Column(nullable = false)
 	private String label;
 
+	@Column(nullable = false, insertable = false, columnDefinition = "boolean DEFAULT false")
+	private boolean locked = false;
+
 	@ManyToMany(mappedBy = "threads")
 	private Set<Message> messages = new HashSet<Message>();
 
@@ -38,5 +41,13 @@ public class Thread {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 }
