@@ -2,6 +2,7 @@ package slack.lite.controller;
 
 import java.util.Set;
 import java.util.UUID;
+import slack.lite.entity.Thread;
 import slack.lite.entity.Message;
 import slack.lite.entity.Response;
 import slack.lite.service.MessageService;
@@ -19,13 +20,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class MessageLite {
-	public Set<UUID> threads;
+	public UUID thread;
 	public String content;
+
+	public Message toMessage() {
+		Thread th = new Thread();
+		th.setId(thread);
+		Message msg = new Message();
+		msg.setThread(th);
+		msg.setContent(content);
+		return msg;
+	}
 }
 
 @RestController
 @RequestMapping("api/v1/messages")
 public class MessageController {
+	private String bad_thread = "Pas de thread correspondant";
 	private String bad_id = "Cette id ne correspond à aucun message.";
 	private String bad_content = "le message ne peut pas être vide ou ne contenir que des caractéres blanc.";
 	private String successfully_deleted = "le message à correctement été supprimer.";
@@ -43,6 +54,11 @@ public class MessageController {
 	@PostMapping
 	public ResponseEntity<Response> create(@RequestHeader("Authorization") UUID id, @RequestBody MessageLite ml) {
 		String c = ml.content;
+		UUID tid = ml.thread;
+		if (tid == null) {
+			Response content = new Response(HttpStatus.BAD_REQUEST, bad_thread);
+			return new ResponseEntity<>(content, HttpStatus.BAD_REQUEST);
+		}
 		if (c.trim().length() < 1) {
 			Response content = new Response(HttpStatus.BAD_REQUEST, bad_content);
 			return new ResponseEntity<>(content, HttpStatus.BAD_REQUEST);
@@ -51,14 +67,15 @@ public class MessageController {
 		// retourner une erreur si le message n'as pu être écrit que dans 0 thread.
 		// TODO : optional pour géré le cas de l'id (Authorization) qui ne correspond à
 		// aucun user
-		Message newmsg = service.save(id, c);
+		Message newmsg = service.save(id, tid, c);
 		Response content = new Response(HttpStatus.OK, newmsg);
 		return new ResponseEntity<>(content, HttpStatus.OK);
 	}
 
 	@DeleteMapping("{id}")
 	public ResponseEntity<Response> delete(@PathVariable("id") UUID id) {
-		// TODO : géré le cas de l'id qui ne correspond pas a l'auteur du message supprimer
+		// TODO : géré le cas de l'id qui ne correspond pas a l'auteur du message
+		// supprimer
 		if (service.delete(id)) {
 			Response content = new Response(HttpStatus.OK, successfully_deleted);
 			return new ResponseEntity<>(content, HttpStatus.OK);
