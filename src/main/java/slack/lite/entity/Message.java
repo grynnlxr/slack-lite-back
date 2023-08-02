@@ -1,11 +1,15 @@
 package slack.lite.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
@@ -24,9 +28,9 @@ public class Message {
 
 	private Date date;
 
-	// @JsonIgnore
-	// @OneToMany(cascade = CascadeType.ALL, mappedBy = "auteur")
-	// public Set<Object> soon;
+	@ManyToMany
+	@JoinTable(name = "message_thread")
+	private Set<Thread> threads = new HashSet<Thread>();
 
 	public UUID getId() {
 		return id;
@@ -58,5 +62,17 @@ public class Message {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public Set<Thread> getThreads() {
+		return threads;
+	}
+
+	public void setThreads(Set<Thread> threads) {
+		this.threads = threads;
+	}
+
+	public void addThread(Thread thread) {
+		this.threads.add(thread);
 	}
 }
