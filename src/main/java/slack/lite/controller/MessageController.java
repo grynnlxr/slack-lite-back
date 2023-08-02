@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class MessageLite {
+	public Set<UUID> threads;
 	public String content;
 }
 
@@ -46,6 +47,8 @@ public class MessageController {
 			Response content = new Response(HttpStatus.BAD_REQUEST, bad_content);
 			return new ResponseEntity<>(content, HttpStatus.BAD_REQUEST);
 		}
+		// TODO : sauvegarder le message dans les threads fournis (ml.threads)
+		// retourner une erreur si le message n'as pu être écrit que dans 0 thread.
 		// TODO : optional pour géré le cas de l'id (Authorization) qui ne correspond à
 		// aucun user
 		Message newmsg = service.save(id, c);
