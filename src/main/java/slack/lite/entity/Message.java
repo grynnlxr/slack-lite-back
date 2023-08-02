@@ -30,6 +30,7 @@ public class Message {
 	@JoinColumn(name = "author_id", nullable = false, updatable = false)
 	private User author;
 
+	@Column(nullable = false, insertable = false, columnDefinition = "timestamp DEFAULT now()")
 	private Date date;
 
 	@ManyToMany(fetch = FetchType.EAGER)
