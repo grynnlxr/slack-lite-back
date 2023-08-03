@@ -1,5 +1,6 @@
 package slack.lite.service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import slack.lite.entity.User;
@@ -7,6 +8,9 @@ import slack.lite.entity.Thread;
 import slack.lite.entity.Message;
 import org.springframework.stereotype.Service;
 import slack.lite.repository.MessageRepository;
+import slack.lite.repository.ThreadRepository;
+import slack.lite.repository.UserRepository;
+
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.OffsetScrollPosition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,31 +18,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service
 public class MessageService {
 	@Autowired
-	MessageRepository repository;
+	MessageRepository messageRepo;
+	@Autowired
+	ThreadRepository threadRepo;
+	@Autowired
+	UserRepository userRepo;
 
-	public Message save(UUID id, UUID tid, String content) {
-		User author = new User();
-		author.setId(id);
-		Thread thread = new Thread();
-		thread.setId(tid);
-		Message msg = new Message();
-		msg.setContent(content);
-		msg.setAuthor(author);
-		msg.setThread(thread);
-		return repository.save(msg);
+	public Optional<Message> save(UUID id, UUID tid, String content) {
+		Optional<User> author = userRepo.findById(id);
+		Optional<Thread> thread = threadRepo.findById(tid);
+		if (author.isPresent() && thread.isPresent() && content.trim().length() > 0) {
+			Message msg = new Message();
+			msg.setContent(content);
+			msg.setAuthor(author.get());
+			msg.setThread(thread.get());
+			return Optional.of(messageRepo.save(msg));
+		}
+		return Optional.empty();
 	}
 
 	public Set<Message> load(UUID id, Integer offset) {
 		OffsetScrollPosition o = ScrollPosition.offset(offset);
-		return repository.findTop20ByThreadIdOrderByDateDesc(id, o);
+		return messageRepo.findTop20ByThreadIdOrderByDateDesc(id, o);
 	}
 
-	public boolean delete(UUID id) {
-		try {
-			repository.deleteById(id);
-			return true;
-		} catch (IllegalArgumentException e) {
+	public Optional<Message> delete(UUID id) {
+		Optional<Message> msg = messageRepo.findById(id);
+		if (msg.isPresent()) {
+			messageRepo.deleteById(msg.get().getId());
 		}
-		return false;
+		return msg;
 	}
 }
