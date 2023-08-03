@@ -1,13 +1,11 @@
 package slack.lite.service;
 
-import java.util.Optional;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.Optional;
 import slack.lite.entity.User;
 import slack.lite.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class UserService {
