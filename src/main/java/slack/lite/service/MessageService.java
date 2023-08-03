@@ -1,16 +1,15 @@
 package slack.lite.service;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Optional;
 import slack.lite.entity.User;
 import slack.lite.entity.Thread;
 import slack.lite.entity.Message;
+import slack.lite.repository.UserRepository;
+import slack.lite.repository.ThreadRepository;
 import org.springframework.stereotype.Service;
 import slack.lite.repository.MessageRepository;
-import slack.lite.repository.ThreadRepository;
-import slack.lite.repository.UserRepository;
-
 import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.OffsetScrollPosition;
 import org.springframework.beans.factory.annotation.Autowired;
