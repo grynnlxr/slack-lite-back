@@ -13,33 +13,36 @@ public class ThreadService {
 	@Autowired
 	ThreadRepository repository;
 
-	public Thread save(String label) {
-		Thread th = new Thread();
-		th.setLabel(label);
-		return repository.save(th);
+	public Optional<Thread> save(String label) {
+		if (label.trim().length() < 1) {
+			return Optional.empty();
+		}
+		return Optional.of(repository.save(new Thread(label)));
 	}
 
-	public Optional<Thread> save(Thread th) {
-		Optional<Thread> op = repository.findById(th.getId());
-		if (op.isPresent() && !op.get().isLocked()) {
-			Thread thread = op.get();
-			thread.setLabel(th.getLabel());
-			repository.save(thread);
-			return Optional.of(thread);
+	public Optional<Thread> save(Thread thread) {
+		String label = thread.getLabel();
+		if (label.trim().length() < 1) {
+			return Optional.empty();
 		}
-		return Optional.empty();
+		Optional<Thread> original = repository.findById(thread.getId());
+		if (original.isPresent() && !original.get().isLocked()) {
+			original.get().setLabel(label);
+			repository.save(original.get());
+		}
+		return original;
 	}
 
 	public Set<Thread> load() {
 		return repository.findAllByOrderByLabelAsc();
 	}
 
-	public boolean delete(UUID id) {
-		Optional<Thread> ot = repository.findById(id);
-		if (ot.isPresent() && !ot.get().isLocked()) {
+	public Optional<Thread> delete(UUID id) {
+		Optional<Thread> original = repository.findById(id);
+		if (original.isPresent() && !original.get().isLocked()) {
 			repository.deleteById(id);
-			return true;
+			return original;
 		}
-		return false;
+		return Optional.empty();
 	}
 }
