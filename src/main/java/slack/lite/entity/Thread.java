@@ -21,6 +21,13 @@ public class Thread {
 	@Column(nullable = false, insertable = false, columnDefinition = "boolean DEFAULT false")
 	private boolean locked = false;
 
+	public Thread() {
+	}
+
+	public Thread(String label) {
+		this.label = label;
+	}
+
 	public UUID getId() {
 		return id;
 	}
