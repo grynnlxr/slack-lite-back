@@ -36,8 +36,7 @@ services:
       dockerfile: psql.Dockerfile
     restart: unless-stopped
     volumes:
-      - /database:/var/lib/postgresql/data
-      - /reset_n_fill.sql:/docker-entrypoint-initdb.d/init.sql
+      - .devcontainer/reset_n_fill.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       # NOTE: POSTGRES_DB/USER/PASSWORD should match values in app container
       POSTGRES_PASSWORD: postgres
