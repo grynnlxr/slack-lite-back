@@ -14,6 +14,8 @@ import org.springframework.data.domain.ScrollPosition;
 import org.springframework.data.domain.OffsetScrollPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 @Service
 public class MessageService {
 	@Autowired
@@ -23,12 +25,18 @@ public class MessageService {
 	@Autowired
 	UserRepository userRepo;
 
+	private String formatMessage(String content) {
+		content = StringEscapeUtils.escapeHtml4(content);
+		// TODO : HERE ADD ROLE PLAY STUFF
+		return content;
+	}
+
 	public Optional<Message> save(UUID id, UUID tid, String content) {
 		Optional<User> author = userRepo.findById(id);
 		Optional<Thread> thread = threadRepo.findById(tid);
 		if (author.isPresent() && thread.isPresent() && content.trim().length() > 0) {
 			Message msg = new Message();
-			msg.setContent(content);
+			msg.setContent(formatMessage(content));
 			msg.setAuthor(author.get());
 			msg.setThread(thread.get());
 			return Optional.of(messageRepo.save(msg));
