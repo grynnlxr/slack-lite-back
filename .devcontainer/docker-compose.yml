@@ -1,8 +1,5 @@
 version: '3.8'
 
-volumes:
-  postgres-data:
-
 services:
   app:
     container_name: javadev
@@ -36,7 +33,7 @@ services:
       dockerfile: psql.Dockerfile
     restart: unless-stopped
     volumes:
-      - sql:/docker-entrypoint-initdb.d
+      - ./sql:/docker-entrypoint-initdb.d
     environment:
       # NOTE: POSTGRES_DB/USER/PASSWORD should match values in app container
       POSTGRES_PASSWORD: postgres
