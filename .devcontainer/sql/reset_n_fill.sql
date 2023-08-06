@@ -32,8 +32,8 @@ VALUES
 	('e6d8b859-22ea-4d4d-a958-f7677a23a38b', 'Alice');
 
 INSERT INTO "public"."thread" ("id", "label", "locked")
-VALUES ('6c77bdf7-477d-4147-b5fc-b849021936be', 'Général', false);
--- VALUES ('6c77bdf7-477d-4147-b5fc-b849021936be', 'Général', true);
+VALUES ('6c77bdf7-477d-4147-b5fc-b849021936be', 'Général', true);
+-- VALUES ('6c77bdf7-477d-4147-b5fc-b849021936be', 'Général', false);
 
 INSERT INTO "public"."message" ("id", "author_id", "thread_id", "content", "date")
 VALUES (
