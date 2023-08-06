@@ -25,20 +25,24 @@ public class MessageService {
 	@Autowired
 	UserRepository userRepo;
 
-	private String format(String content) {
-		content = Pattern.compile("[{]d(4|6|8|10|12|20|100):([0-9]+)[}]").matcher(content)
-				.replaceAll("<span class=\"dice-$1\">$2</span>");
-		content = Pattern.compile("[*]{2}(.*?)[*]{2}").matcher(content).replaceAll("<b>$1</b>");
-		content = Pattern.compile("[/]{2}(.*?)[/]{2}").matcher(content).replaceAll("<em>$1</em>");
-		content = Pattern.compile("[-]{2}(.*?)[-]{2}").matcher(content).replaceAll("<del>$1</del>");
-		content = Pattern.compile("[_]{2}(.*?)[_]{2}").matcher(content)
-				.replaceAll("<span class=\"underline\">$1</span>");
-		content = Pattern.compile("\n\n").matcher(content).replaceAll("</p><p>");
+	private Message format(Message message) {
+		String content = message.getContent();
 		content = "<p>" + content + "</p>";
-		content = Pattern.compile("\n").matcher(content).replaceAll("<br/>");
-		content = Pattern.compile("<p>(https://tenor.com/[a-zA-Z0-9].gif)</p>").matcher(content)
-				.replaceAll("<img src=\"$1\">");
-		return content;
+		String[][] replace = {
+				{ "[{]d(4|6|8|10|12|20|100):([0-9]+)[}]", "<span class=\"dice-$1\">$2</span>" },
+				{ "[*]{2}(.*?)[*]{2}", "<b>$1</b>" },
+				{ "[/]{2}(.*?)[/]{2}", "<em>$1</em>" },
+				{ "[-]{2}(.*?)[-]{2}", "<del>$1</del>" },
+				{ "[_]{2}(.*?)[_]{2}", "<span class=\"underline\">$1</span>" },
+				{ "\n\n", "</p><p>" },
+				{ "\n", "<br/>" },
+				{ "<p>(https://tenor.com/[a-zA-Z0-9]+\\.gif)</p>", "<img src=\"$1\">" }
+		};
+		for (String[] rule : replace) {
+			content = Pattern.compile(rule[0]).matcher(content).replaceAll(rule[1]);
+		}
+		message.setContent(content);
+		return message;
 	}
 
 	public Optional<Message> save(UUID id, UUID tid, String content) {
@@ -57,9 +61,18 @@ public class MessageService {
 			msg.setContent(content);
 			msg.setAuthor(author.get());
 			msg.setThread(thread.get());
-			Message saved = messageRepo.save(msg);
-			saved.setContent(format(saved.getContent()));
-			return Optional.of(saved);
+			msg = messageRepo.save(msg);
+			return load(msg.getId());
+		}
+		return Optional.empty();
+	}
+
+	public Optional<Message> load(UUID id) {
+		Optional<Message> o = messageRepo.findById(id);
+		if (o.isPresent()) {
+			Message msg = o.get();
+			msg = format(msg);
+			return Optional.of(msg);
 		}
 		return Optional.empty();
 	}
@@ -68,20 +81,19 @@ public class MessageService {
 		OffsetScrollPosition o = ScrollPosition.offset(offset);
 		Set<Message> messages = messageRepo.findTop20ByThreadIdOrderByDateDesc(id, o);
 		for (Message message : messages) {
-			String content = message.getContent();
-			content = format(content);
-			message.setContent(content);
+			format(message);
 		}
 		return messages;
 	}
 
 	public Optional<Message> delete(UUID id) {
-		Optional<Message> msg = messageRepo.findById(id);
-		if (msg.isPresent()) {
-			Message m = msg.get();
-			m.setContent(null);
-			messageRepo.deleteById(m.getId());
+		try {
+			messageRepo.deleteById(id);
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
 		}
-		return msg;
+		Message msg = new Message();
+		msg.setId(id);
+		return Optional.of(msg);
 	}
 }
