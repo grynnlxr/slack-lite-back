@@ -7,8 +7,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
+@JsonInclude(Include.NON_NULL)
 @Table(name = "thread", schema = "public")
 public class Thread {
 	@Id
