@@ -1,0 +1,24 @@
+# https://github.com/compose-spec/compose-spec/blob/master/spec.md
+
+services:
+  api:
+    container_name: slack-lite-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    depends_on:
+      - db
+  db:
+    container_name: slack-lite-db
+    image: postgres:15.4-alpine
+    restart: unless-stopped
+    volumes:
+      - ../sql:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
